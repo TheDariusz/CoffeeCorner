@@ -1,4 +1,4 @@
-package com.thedariusz.coffeecorner;
+package com.thedariusz.coffeecorner.products;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -20,14 +20,16 @@ public class Product {
         return price;
     }
 
-    public static Map<String, BigDecimal> productCatalog() {
+    static Map<String, BigDecimal> productCatalog() {
         return Map.of(
                 "Small coffee", new BigDecimal("2.50"),
                 "Medium coffee", new BigDecimal("3.00"),
                 "Large coffee", new BigDecimal("5.50"),
                 "extra milk", new BigDecimal("0.30"),
                 "foamed milk", new BigDecimal("0.50"),
-                "special roast coffee", new BigDecimal("0.90")
+                "special roast coffee", new BigDecimal("0.90"),
+                "Bacon Roll", new BigDecimal("4.50"),
+                "Freshly squeezed orange juice", new BigDecimal("3.95")
         );
     }
 }

@@ -1,12 +1,15 @@
 package com.thedariusz.coffeecorner.products;
 
-import com.thedariusz.coffeecorner.Product;
-
 import java.math.BigDecimal;
 
 public class Snack extends Product {
 
-    public Snack(String name, BigDecimal price) {
+    private Snack(String name, BigDecimal price) {
         super(name, price);
+    }
+    
+    public static Snack baconRoll() {
+        String name = "Bacon Roll";
+        return new Snack(name, productCatalog().get(name));
     }
 }

@@ -1,20 +1,19 @@
 package com.thedariusz.coffeecorner;
 
 import com.thedariusz.coffeecorner.products.Coffee;
+import com.thedariusz.coffeecorner.products.Juice;
 import com.thedariusz.coffeecorner.products.Snack;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
 
 
 class OrderTest {
     final Coffee smallCoffee = Coffee.small();
     final Coffee mediumCoffee = Coffee.medium();
     final Coffee largeCoffee = Coffee.large();
-    final Coffee smallCoffeeWithFoamedMilk = Coffee.small().withFoamedMilk();
     final Coffee largeRoastCoffeeWithFoamedMilk = Coffee.large().withFoamedMilk().roastCoffee();
-    final Snack snack = new Snack("Bacon roll", new BigDecimal("5.1"));
+    final Snack baconRoll = Snack.baconRoll();
+    final Juice orangeJuice = Juice.orange();
 
     @Test
     void shouldAddProductToOrder() {
@@ -24,8 +23,12 @@ class OrderTest {
         testOrder.addProduct(smallCoffee);
         testOrder.addProduct(mediumCoffee);
         testOrder.addProduct(largeCoffee);
+        testOrder.addProduct(baconRoll);
+        testOrder.addProduct(orangeJuice);
+        
 
-        Assertions.assertThat(testOrder.getProducts()).containsExactly(smallCoffee, mediumCoffee, largeCoffee);
+        Assertions.assertThat(testOrder.getProducts()).containsExactly(smallCoffee, mediumCoffee, largeCoffee,
+                baconRoll, orangeJuice);
     }
 
     @Test
@@ -36,35 +39,30 @@ class OrderTest {
     }
 
     @Test
-    void shouldReturnTotalPriceForLargeCoffeeAndSmallCoffeeWithFoamedMilk() {
-        Order testOrder = new Order();
-        testOrder.addProduct(largeCoffee);
-        testOrder.addProduct(smallCoffeeWithFoamedMilk);
-
-        Assertions.assertThat(testOrder.getTotal()).isEqualTo("8.50");
-    }
-
-    @Test
-    void shouldReturnTotalPriceForLargeRoastCoffeeAndWithFoamedMilk() {
+    void shouldReturnTotalPriceForCoffeeWithExtrasSnackJuice() {
         Order testOrder = new Order();
         testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
+        testOrder.addProduct(baconRoll);
+        testOrder.addProduct(orangeJuice);
 
-        Assertions.assertThat(testOrder.getTotal()).isEqualTo("6.90");
+        Assertions.assertThat(testOrder.getTotal()).isEqualTo("15.35");
     }
 
     @Test
-    void shoudReturnReceipt() {
+    void shouldReturnReceipt() {
         Order testOrder = new Order();
-        testOrder.addProduct(smallCoffee);
-        testOrder.addProduct(smallCoffeeWithFoamedMilk);
+        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
+        testOrder.addProduct(baconRoll);
+        testOrder.addProduct(orangeJuice);
 
-        String receipt = testOrder.getReceipt();
+        StringBuilder receipt = testOrder.getReceipt();
 
-        Assertions.assertThat(receipt).isEqualTo(
+        Assertions.assertThat(receipt.toString()).hasToString(
                 """
-                        Small coffee - 2.50CHF
-                        Small coffee with foamed milk - 3.00CHF
+                        Large coffee with foamed milk with special roast coffee - 6.90CHF
+                        Bacon Roll - 4.50CHF
+                        Freshly squeezed orange juice - 3.95CHF
                         ---------------
-                        Total:   5.50CHF""");
+                        Total:   15.35CHF""");
     }
 }
