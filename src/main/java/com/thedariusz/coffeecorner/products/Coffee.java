@@ -56,7 +56,7 @@ public class Coffee extends Product {
         return new Extra(extrasName, Product.productCatalog().get(extrasName));
     }
 
-    record Extra(String name,
+    public record Extra(String name,
                          BigDecimal price) {
     }
 }

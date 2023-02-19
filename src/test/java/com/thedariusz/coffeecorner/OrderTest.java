@@ -39,13 +39,16 @@ class OrderTest {
     }
 
     @Test
-    void shouldReturnTotalPriceForCoffeeWithExtrasSnackJuice() {
+    void shouldReturnTotalPriceFor5CoffeeWithDiscountAndSnack() {
         Order testOrder = new Order();
         testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
         testOrder.addProduct(baconRoll);
         testOrder.addProduct(orangeJuice);
+        testOrder.addProduct(smallCoffee);
+        testOrder.addProduct(mediumCoffee);
+        testOrder.addProduct(largeCoffee);
 
-        Assertions.assertThat(testOrder.getTotal()).isEqualTo("15.35");
+        Assertions.assertThat(testOrder.getTotal()).isEqualTo("20.85");
     }
 
     @Test
@@ -54,6 +57,7 @@ class OrderTest {
         testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
         testOrder.addProduct(baconRoll);
         testOrder.addProduct(orangeJuice);
+        
 
         StringBuilder receipt = testOrder.getReceipt();
 
@@ -64,5 +68,54 @@ class OrderTest {
                         Freshly squeezed orange juice - 3.95CHF
                         ---------------
                         Total:   15.35CHF""");
+    }
+    
+    @Test
+    void shouldReturnBeverageDiscountCountingEveryFifthBeverage() {
+        Order testOrder = new Order();
+        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk); 
+        testOrder.addProduct(baconRoll);
+        testOrder.addProduct(orangeJuice);
+        testOrder.addProduct(smallCoffee);
+        testOrder.addProduct(mediumCoffee);
+        testOrder.addProduct(largeCoffee); //5.5
+        testOrder.addProduct(baconRoll);
+        testOrder.addProduct(orangeJuice);
+        testOrder.addProduct(smallCoffee);
+        testOrder.addProduct(mediumCoffee);
+        testOrder.addProduct(largeCoffee); 
+        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk); //6.9
+        
+        Assertions.assertThat(testOrder.getTotalBeverageDiscount()).isEqualTo("12.40");
+    }
+
+    @Test
+    void shouldntReturnBeverageDiscountCountingFourBeveragesAndSnack() {
+        Order testOrder = new Order();
+        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
+        testOrder.addProduct(baconRoll);
+        testOrder.addProduct(orangeJuice);
+        testOrder.addProduct(smallCoffee);
+        testOrder.addProduct(mediumCoffee);
+
+        Assertions.assertThat(testOrder.getTotalBeverageDiscount()).isZero();
+    }
+    
+    @Test
+    void shouldReturnExtraDiscountForFoamedMilkWithSnack() {
+        Order testOrder = new Order();
+        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
+        testOrder.addProduct(baconRoll);
+        
+        Assertions.assertThat(testOrder.getExtrasDiscount()).isEqualTo("0.50");
+    }
+
+    @Test
+    void shouldntReturnExtraDiscountForFoamedMilkWithoutSnack() {
+        Order testOrder = new Order();
+        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
+        testOrder.addProduct(orangeJuice);
+
+        Assertions.assertThat(testOrder.getExtrasDiscount()).isZero();
     }
 }
