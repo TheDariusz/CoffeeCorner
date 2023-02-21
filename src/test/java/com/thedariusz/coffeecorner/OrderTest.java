@@ -4,118 +4,89 @@ import com.thedariusz.coffeecorner.products.Coffee;
 import com.thedariusz.coffeecorner.products.Juice;
 import com.thedariusz.coffeecorner.products.Snack;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
 class OrderTest {
-    final Coffee smallCoffee = Coffee.small();
-    final Coffee mediumCoffee = Coffee.medium();
-    final Coffee largeCoffee = Coffee.large();
-    final Coffee largeRoastCoffeeWithFoamedMilk = Coffee.large().withFoamedMilk().roastCoffee();
-    final Snack baconRoll = Snack.baconRoll();
-    final Juice orangeJuice = Juice.orange();
+    final Coffee firstBeverageNoExtras = Coffee.small();
+    final Coffee secondBeverageNoExtras = Coffee.medium();
+    final Coffee thirdBeverageNoExtras = Coffee.large();
+    final Coffee fourthBeverageWithExtras = Coffee.large().withFoamedMilk().roastCoffee();
+    final Snack snack = Snack.baconRoll();
+    final Juice fifthBeverageNoExtras = Juice.orange();
 
+    Order testOrder = new Order();
+
+    @BeforeEach
+    void prepareBaseOrder() {
+        testOrder.addProduct(firstBeverageNoExtras);
+        testOrder.addProduct(secondBeverageNoExtras);
+        testOrder.addProduct(thirdBeverageNoExtras);
+        testOrder.addProduct(fourthBeverageWithExtras);
+        testOrder.addProduct(fifthBeverageNoExtras);
+        testOrder.addProduct(snack);
+    }
+    
     @Test
-    void shouldAddProductToOrder() {
-
-        Order testOrder = new Order();
-
-        testOrder.addProduct(smallCoffee);
-        testOrder.addProduct(mediumCoffee);
-        testOrder.addProduct(largeCoffee);
-        testOrder.addProduct(baconRoll);
-        testOrder.addProduct(orangeJuice);
-        
-
-        Assertions.assertThat(testOrder.getProducts()).containsExactly(smallCoffee, mediumCoffee, largeCoffee,
-                baconRoll, orangeJuice);
+    void shouldHaveProductsFromBaseOrder() {
+        Assertions.assertThat(testOrder.getProducts()).containsExactly(
+                firstBeverageNoExtras, secondBeverageNoExtras, thirdBeverageNoExtras, 
+                fourthBeverageWithExtras, fifthBeverageNoExtras, snack);
     }
 
     @Test
     void emptyOrderShouldCostZero() {
-        Order testOrder = new Order();
+        Order emptyOrder = new Order();
 
-        Assertions.assertThat(testOrder.getTotal()).isZero();
+        Assertions.assertThat(emptyOrder.getTotal()).isZero();
     }
 
     @Test
-    void shouldReturnTotalPriceFor5CoffeeWithDiscountAndSnack() {
-        Order testOrder = new Order();
-        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
-        testOrder.addProduct(baconRoll);
-        testOrder.addProduct(orangeJuice);
-        testOrder.addProduct(smallCoffee);
-        testOrder.addProduct(mediumCoffee);
-        testOrder.addProduct(largeCoffee);
-
+    void shouldReturnTotalPriceForBaseOrder() {
         Assertions.assertThat(testOrder.getTotal()).isEqualTo("20.85");
     }
 
     @Test
     void shouldReturnReceipt() {
-        Order testOrder = new Order();
-        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
-        testOrder.addProduct(baconRoll);
-        testOrder.addProduct(orangeJuice);
-        
-
         StringBuilder receipt = testOrder.getReceipt();
 
         Assertions.assertThat(receipt.toString()).hasToString(
                 """
+                        Small coffee - 2.50CHF
+                        Medium coffee - 3.00CHF
+                        Large coffee - 5.50CHF
                         Large coffee with foamed milk with special roast coffee - 6.90CHF
-                        Bacon Roll - 4.50CHF
                         Freshly squeezed orange juice - 3.95CHF
+                        Bacon Roll - 4.50CHF
                         ---------------
-                        Total:   15.35CHF""");
+                        Total:   22.40CHF""");
     }
     
     @Test
-    void shouldReturnBeverageDiscountCountingEveryFifthBeverage() {
-        Order testOrder = new Order();
-        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk); 
-        testOrder.addProduct(baconRoll);
-        testOrder.addProduct(orangeJuice);
-        testOrder.addProduct(smallCoffee);
-        testOrder.addProduct(mediumCoffee);
-        testOrder.addProduct(largeCoffee); //5.5
-        testOrder.addProduct(baconRoll);
-        testOrder.addProduct(orangeJuice);
-        testOrder.addProduct(smallCoffee);
-        testOrder.addProduct(mediumCoffee);
-        testOrder.addProduct(largeCoffee); 
-        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk); //6.9
-        
-        Assertions.assertThat(testOrder.getTotalBeverageDiscount()).isEqualTo("12.40");
+    void shouldReturnBeverageDiscountForEveryFifthBeverage() {
+        Assertions.assertThat(testOrder.getEveryFifthBeverage()).isEqualTo("3.95");
     }
 
     @Test
-    void shouldntReturnBeverageDiscountCountingFourBeveragesAndSnack() {
-        Order testOrder = new Order();
-        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
-        testOrder.addProduct(baconRoll);
-        testOrder.addProduct(orangeJuice);
-        testOrder.addProduct(smallCoffee);
-        testOrder.addProduct(mediumCoffee);
+    void shouldntReturnBeverageDiscountForFourBeveragesAndSnack() {
+        Order orderWithOneBeverage = new Order();
+        orderWithOneBeverage.addProduct(firstBeverageNoExtras);
 
-        Assertions.assertThat(testOrder.getTotalBeverageDiscount()).isZero();
+        Assertions.assertThat(orderWithOneBeverage.getEveryFifthBeverage()).isZero();
     }
     
     @Test
-    void shouldReturnExtraDiscountForFoamedMilkWithSnack() {
-        Order testOrder = new Order();
-        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
-        testOrder.addProduct(baconRoll);
-        
-        Assertions.assertThat(testOrder.getExtrasDiscount()).isEqualTo("0.50");
+    void shouldReturnDiscountForBeverageWithExtrasAndSnack() {
+        Assertions.assertThat(testOrder.getFreeExtras()).isEqualTo("0.50");
     }
 
     @Test
     void shouldntReturnExtraDiscountForFoamedMilkWithoutSnack() {
-        Order testOrder = new Order();
-        testOrder.addProduct(largeRoastCoffeeWithFoamedMilk);
-        testOrder.addProduct(orangeJuice);
+        Order orderWithoutSnack = new Order();
+        orderWithoutSnack.addProduct(firstBeverageNoExtras);
+        orderWithoutSnack.addProduct(secondBeverageNoExtras);
 
-        Assertions.assertThat(testOrder.getExtrasDiscount()).isZero();
+        Assertions.assertThat(orderWithoutSnack.getFreeExtras()).isZero();
     }
 }
