@@ -32,4 +32,8 @@ public class Product {
                 "Freshly squeezed orange juice", new BigDecimal("3.95")
         );
     }
+
+    public boolean isBeverage() {
+        return this instanceof Coffee || this instanceof Juice;
+    }
 }

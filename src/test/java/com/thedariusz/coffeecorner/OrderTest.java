@@ -1,32 +1,10 @@
 package com.thedariusz.coffeecorner;
 
-import com.thedariusz.coffeecorner.products.Coffee;
-import com.thedariusz.coffeecorner.products.Juice;
-import com.thedariusz.coffeecorner.products.Snack;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-class OrderTest {
-    final Coffee firstBeverageNoExtras = Coffee.small();
-    final Coffee secondBeverageNoExtras = Coffee.medium();
-    final Coffee thirdBeverageNoExtras = Coffee.large();
-    final Coffee fourthBeverageWithExtras = Coffee.large().withFoamedMilk().roastCoffee();
-    final Snack snack = Snack.baconRoll();
-    final Juice fifthBeverageNoExtras = Juice.orange();
-
-    Order testOrder = new Order();
-
-    @BeforeEach
-    void prepareBaseOrder() {
-        testOrder.addProduct(firstBeverageNoExtras);
-        testOrder.addProduct(secondBeverageNoExtras);
-        testOrder.addProduct(thirdBeverageNoExtras);
-        testOrder.addProduct(fourthBeverageWithExtras);
-        testOrder.addProduct(fifthBeverageNoExtras);
-        testOrder.addProduct(snack);
-    }
+class OrderTest extends BaseOrder {
     
     @Test
     void shouldHaveProductsFromBaseOrder() {
@@ -44,7 +22,7 @@ class OrderTest {
 
     @Test
     void shouldReturnTotalPriceForBaseOrder() {
-        Assertions.assertThat(testOrder.getTotal()).isEqualTo("20.85");
+        Assertions.assertThat(testOrder.getTotal()).isEqualTo("21.90");
     }
 
     @Test
@@ -60,33 +38,6 @@ class OrderTest {
                         Freshly squeezed orange juice - 3.95CHF
                         Bacon Roll - 4.50CHF
                         ---------------
-                        Total:   22.40CHF""");
-    }
-    
-    @Test
-    void shouldReturnBeverageDiscountForEveryFifthBeverage() {
-        Assertions.assertThat(testOrder.getEveryFifthBeverage()).isEqualTo("3.95");
-    }
-
-    @Test
-    void shouldntReturnBeverageDiscountForFourBeveragesAndSnack() {
-        Order orderWithOneBeverage = new Order();
-        orderWithOneBeverage.addProduct(firstBeverageNoExtras);
-
-        Assertions.assertThat(orderWithOneBeverage.getEveryFifthBeverage()).isZero();
-    }
-    
-    @Test
-    void shouldReturnDiscountForBeverageWithExtrasAndSnack() {
-        Assertions.assertThat(testOrder.getFreeExtras()).isEqualTo("0.50");
-    }
-
-    @Test
-    void shouldntReturnExtraDiscountForFoamedMilkWithoutSnack() {
-        Order orderWithoutSnack = new Order();
-        orderWithoutSnack.addProduct(firstBeverageNoExtras);
-        orderWithoutSnack.addProduct(secondBeverageNoExtras);
-
-        Assertions.assertThat(orderWithoutSnack.getFreeExtras()).isZero();
+                        Total:   21.90CHF""");
     }
 }

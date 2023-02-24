@@ -5,13 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
 
     private static final Logger logger = LoggerFactory.getLogger(Order.class);
     private final List<Product> products = new ArrayList<>();
-    private final List<Discount> discounts = new ArrayList<>();
+
 
     public List<Product> getProducts() {
         return List.copyOf(products);
@@ -23,12 +24,16 @@ public class Order {
     }
 
     public BigDecimal getTotal() {
-        Discount discount = new Discount(products);
+        List<Discount> discounts = Discount.calculate(products);
 
+        BigDecimal discountSum = discounts.stream()
+                .map(Discount::discount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
         return products.stream()
                 .map(Product::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .subtract(discount.calculate());
+                .subtract(discountSum);
     }
 
     public StringBuilder getReceipt() {
@@ -42,4 +47,6 @@ public class Order {
 
         return receipt;
     }
+
+
 }
