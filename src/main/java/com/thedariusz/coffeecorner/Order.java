@@ -11,11 +11,19 @@ import java.util.List;
 public class Order {
 
     private static final Logger logger = LoggerFactory.getLogger(Order.class);
-    private final List<Product> products = new ArrayList<>();
+    private final List<Product> products;
+
+    public Order() {
+        this.products = new ArrayList<>();
+    }
 
 
     public List<Product> getProducts() {
         return List.copyOf(products);
+    }
+
+    public List<Discount> getDiscounts() {
+        return Discount.calculate(products);
     }
 
     public void addProduct(Product product) {
@@ -24,28 +32,16 @@ public class Order {
     }
 
     public BigDecimal getTotal() {
-        List<Discount> discounts = Discount.calculate(products);
-
-        BigDecimal discountSum = discounts.stream()
-                .map(Discount::discount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
         return products.stream()
                 .map(Product::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .subtract(discountSum);
+                .subtract(getDiscountSum());
     }
 
-    public StringBuilder getReceipt() {
-        StringBuilder receipt = new StringBuilder();
-        for (Product product : products) {
-            receipt.append(product.getName()).append(" - ");
-            receipt.append(product.getPrice()).append("CHF\n");
-        }
-        receipt.append("---------------\n");
-        receipt.append("Total:   ").append(getTotal()).append("CHF");
-
-        return receipt;
+    private BigDecimal getDiscountSum() {
+        return getDiscounts().stream()
+                .map(Discount::discount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 

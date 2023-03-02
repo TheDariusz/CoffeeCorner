@@ -12,16 +12,17 @@ public class BaseOrder {
     final Coffee firstBeverageNoExtras = Coffee.small();
     final Coffee secondBeverageNoExtras = Coffee.medium();
     final Coffee thirdBeverageNoExtras = Coffee.large();
-    final Coffee fourthBeverageWithExtras = Coffee.large().withFoamedMilk().roastCoffee();
+    final Coffee fourthBeverageWithFoamedMilkAndRoastCoffee = Coffee.large().withFoamedMilk().roastCoffee();
     final Snack snack = Snack.baconRoll();
     final Juice fifthBeverageNoExtras = Juice.orange();
 
+    
     @BeforeEach
     void prepareBaseOrder() {
         testOrder.addProduct(firstBeverageNoExtras);
         testOrder.addProduct(secondBeverageNoExtras);
         testOrder.addProduct(thirdBeverageNoExtras);
-        testOrder.addProduct(fourthBeverageWithExtras);
+        testOrder.addProduct(fourthBeverageWithFoamedMilkAndRoastCoffee);
         testOrder.addProduct(fifthBeverageNoExtras);
         testOrder.addProduct(snack);
     }

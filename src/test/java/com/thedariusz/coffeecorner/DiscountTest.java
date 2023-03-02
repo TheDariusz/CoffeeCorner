@@ -19,7 +19,7 @@ class DiscountTest extends BaseOrder {
 
     @Test
     void shouldReturnFreeFirstExtraDiscountForExtrasAndSnack() {
-        Coffee.Extra firstExtras = fourthBeverageWithExtras.getExtras().get(0);
+        Coffee.Extra firstExtras = fourthBeverageWithFoamedMilkAndRoastCoffee.getExtras().get(0);
         Discount freeFirstExtraDiscount = new Discount("Free " + firstExtras.name(), firstExtras.price());
 
         List<Discount> extrasDiscount = Discount.getExtrasDiscounts(testOrder.getProducts());

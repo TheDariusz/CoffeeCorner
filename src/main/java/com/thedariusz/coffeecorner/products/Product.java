@@ -20,7 +20,7 @@ public class Product {
         return price;
     }
 
-    static Map<String, BigDecimal> productCatalog() {
+    public static Map<String, BigDecimal> productCatalog() {
         return Map.of(
                 "Small coffee", new BigDecimal("2.50"),
                 "Medium coffee", new BigDecimal("3.00"),
