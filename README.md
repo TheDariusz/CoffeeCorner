@@ -1,6 +1,6 @@
 # Coffee Corner
 A simple model of coffee shop where customer can order beverages (with extras or not), and snacks.
-The model have to fulfill defined scope of the task.
+The model has to fulfill defined scope of the task.
 
 ## Scope of task
 ### Charlene's Coffee Corner
